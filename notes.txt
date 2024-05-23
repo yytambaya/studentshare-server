@@ -1,0 +1,31 @@
+Plan
+Login
+
+Dashboard
+    Profile(CRUD)
+    Different Payment Program(General fundraising program, by default) created by Admin
+    A leadership board
+    A stats of what's fundraised 
+
+    Admin(create fundriasing programs, view funds stats, CRUD users, See payments and stats, See winners and stats)
+
+
+Model(User, Program, Payment, Leadboard)
+Program(name, desc, amount, amount_raised, contributors,)
+payment()
+Leaderbaord
+
+17/05/22
+# API Validations 30- 1h
+# Controller building 30-1h
+# API Testing 15-30 mins
+# Configs 15-40mins
+# Deployment 30-1h
+
+
+program
+#name, desc, category, amount to be raised, min, max, period, participants[id. pay_id], winner_percentage
+Leadboard
+#prog_id, user_id, win_amount, winning_method 
+Payment
+#prog_id, transaction_type, ... 
