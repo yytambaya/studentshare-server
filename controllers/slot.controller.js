@@ -15,7 +15,7 @@ exports.setSlot = (req, res) => {
     })
     .catch(err => {
         console.log("Error: ", err);
-        res.json({error: "erorr", result: err, })
+        res.json({error: "error", result: err, })
     })
 
 }

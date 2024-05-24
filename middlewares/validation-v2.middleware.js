@@ -4,7 +4,7 @@ const signup = (req, res, next) => {
     const validationRule = {
         "name": "required|string",
         "email": "required|email|max:1000",
-        "password": "required|digits:11",
+        "password": "required|string|min:6",
     }
     validator(req.body, validationRule, {}, (err, status) => {
         if (!status) {

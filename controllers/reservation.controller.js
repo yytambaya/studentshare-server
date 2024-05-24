@@ -20,7 +20,7 @@ exports.setReservation =  async (req, res) => {
         }
     }).catch(err => {
         console.log("Error: ", err);
-        res.json({error: "erorr", result: "something went wrong", })
+        res.json({error: "error", result: "something went wrong", })
     })
 
 }

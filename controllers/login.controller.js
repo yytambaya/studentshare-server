@@ -54,16 +54,16 @@ exports.signUp = (req, res) => {
             //const text2 = template({message: "Hello!"})
             sendMail2(from, to, subject, text);
         //return res.json({error:"", result:{spr_result}});
-        return res.json({error: "", result: "Signed up successfully", })
+        return res.json({error: "", status: 200, result: "Signed up successfully", })
         })
         .catch( err => {
-            res.json({error: "error", result: "Something went wrong mail"});
+            res.json({error: "error", error: 500, result: "Something went wrong mail"});
         })
         
     })
     .catch(err => {
         console.log("Error: ", err);
-        res.json({error: "erorr", result: err, })
+        res.json({error: "erorr", status: 500, result: err, })
     })
 
 }
@@ -99,7 +99,7 @@ exports.subscribe = (req, res) => {
     })
     .catch(err => {
         console.log("Error: ", err);
-        res.json({error: "erorr", result: err, })
+        res.json({error: "erorr", result: 'something went wrong', })
     })
 
 }
@@ -127,16 +127,16 @@ exports.adminSignUp = (req, res) => {
             //const text2 = template({message: "Hello!"})
             sendMail2(from, to, subject, text);
         //return res.json({error:"", result:{spr_result}});
-        return res.json({error: "", result: "Signed up successfully", })
+        return res.json({error: "", status:200, result: "Signed up successfully", })
         })
         .catch( err => {
-            res.json({error: "error", result: "Something went wrong mail"});
+            res.json({error: "error", status: 500, result: "Something went wrong mail"});
         })
         
     })
     .catch(err => {
         console.log("Error: ", err);
-        res.json({error: "erorr", result: err, })
+        res.json({error: "error", status: 500, result: 'something went wrong', })
     })
 
 }
@@ -287,13 +287,13 @@ exports.signIn = (req, res) => {
     User.findOne({email: req.body.email}, (err, result) => {
         if(err){
             console.log("Error: ", err);
-            return res.json({error:"error", result:"something went wrong"});
+            return res.json({error:"error", status: 500, result:"something went wrong"});
         }
         if(result){
             //process.env.login_token_secret
             const isValidPassword = bcrypt.compareSync(req.body.password, result.password);
             if(!isValidPassword){
-               return res.json({error:"error", result:"email or password is incorrect"});
+               return res.json({error:"error", status: 404, result:"email or password is incorrect"});
             }
             if(result.status == 0){
                 return res.json({error:"error", result:"Verify your account"});
@@ -302,10 +302,10 @@ exports.signIn = (req, res) => {
                 console.log(result);
                 const temp_sec = 'tamuysyusghd';
                 const token = jwt.sign({email: req.body.email}, config.allconfig.temp_var.token_secret, {expiresIn: '86400s'}); 
-                return res.json({error:"", code:400, result:{token: token, result}});
+                return res.json({error:"", code:400, status:200, result:{token: token, result}});
             }   
         }else{
-            return res.json({error:"error", result:"username or password is incorrect"});
+            return res.json({error:"error", status: 404, result:"username or password is incorrect"});
         }
      
     });
@@ -322,16 +322,16 @@ exports.adminSignIn = (req, res) => {
     Admin.findOne({email: req.body.email}, (err, result) => {
         if(err){
             console.log("Error: ", err);
-            return res.json({error:"error", result:"something went wrong"});
+            return res.json({error:"error", status: 500, result:"something went wrong"});
         }
         if(result){
             //process.env.login_token_secret
             const isValidPassword = bcrypt.compareSync(req.body.password, result.password);
             if(!isValidPassword){
-               return res.json({error:"error", result:"email or password is incorrect"});
+               return res.json({error:"error", status:404, result:"email or password is incorrect"});
             }
             if(result.role == 0){
-                return res.json({error:"error", result:"Unauthorized!"});
+                return res.json({error:"error", status: 405, result:"Unauthorized!"});
             }else{
                 console.log("My User ID: " + result._id)
                 console.log(result);
@@ -339,10 +339,10 @@ exports.adminSignIn = (req, res) => {
                         const temp_sec = 'tamuysyusghd';
                         const token = jwt.sign({email: req.body.email}, config.allconfig.temp_var.token_secret, {expiresIn: '86400s'}); 
                         //temp_sec should be replaced by process.env....
-                        return res.json({error:"", result:{token: token, role: result.role, result}});
+                        return res.json({error:"", status: 200, result:{token: token, role: result.role, result}});
             }
         }else{
-            return res.json({error:"error", result:"username or password is incorrect"});
+            return res.json({error:"error", status: 404, result:"username or password is incorrect"});
         }
     });   
 

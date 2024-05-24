@@ -37,7 +37,7 @@ const adminAccountExists = ((req, res, next) => {
             console.log("Error: ", err);
             res.json({error:"error", result:"something went wrong"});
         }else if(result){
-            res.json({error:"error", result:"email already registered"});
+            res.json({error:"error", status: 409, result:"email already registered"});
         }else{
             next();
         }
