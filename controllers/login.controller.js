@@ -295,7 +295,7 @@ exports.signIn = (req, res) => {
             if(!isValidPassword){
                return res.json({error:"error", status: 404, result:"email or password is incorrect"});
             }
-            if(result.status == 0){
+            if(false){
                 return res.json({error:"error", result:"Verify your account"});
             }else{
                 console.log("My User ID: " + result._id)

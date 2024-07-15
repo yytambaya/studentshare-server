@@ -74,6 +74,24 @@ const emailExists = ((req, res, next) => {
     });
 })
 
+const accountVerified = ((req, res, next) => {
+    User.findOne({email: req.body.email}, (err, result) => {
+        if(err){
+            console.log("Error: ", err);
+            return res.json({error:"error", result:"something went wrong"});
+        }else if(result){
+            if(result.status == 0){
+                return res.json({error:"error", status: 409, result:"account not verified"});
+            }else{
+                next()
+            }
+        
+        }else{
+            next()
+        }
+    });
+})
+
 const phoneNumberExists = ((req, res, next) => {
     User.findOne({phoneNumber: req.body.phoneNumber}, (err, result) => {
         if(err){
@@ -223,6 +241,7 @@ module.exports = {
     litExists: litExists,
     emailExists,
     phoneNumberExists,
+    accountVerified,
     parkNameExists,
     parkSlotExists,
     emailEditExists,

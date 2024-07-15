@@ -39,7 +39,7 @@ module.exports = app => {
     app.post('/v1/user/subscribe', [middlewares.Auth.isAuthorized, middlewares.validatorV2.validateEmail,  middlewares.Auth.subscriptionExists], controllers.login.subscribe);
     app.post('/v1/admin/signup', [middlewares.Auth.isAuthorized, middlewares.validatorV2.signup,  middlewares.Auth.adminAccountExists], controllers.login.adminSignUp);
     app.get('/v1/user/activate', [middlewares.validator.validateID_get],  controllers.login.verifyAccount); //correct 
-    app.post('/v1/user/login', [middlewares.Auth.isAuthorized, middlewares.validatorV2.login], controllers.login.signIn);
+    app.post('/v1/user/login', [middlewares.Auth.isAuthorized, middlewares.validatorV2.login, middlewares.Dashbaord.accountVerified], controllers.login.signIn);
     app.post('/v1/admin/login', [middlewares.Auth.isAuthorized, middlewares.validatorV2.login], controllers.login.adminSignIn);
     app.post('/v1/user/forgotpassword', [middlewares.Auth.isAuthorized, middlewares.validatorV2.validateEmail], controllers.login.forgotPassword);
     app.get('/v1/user/reset', [middlewares.validator.validateID_get, middlewares.validator.validateToken], controllers.login.passwordReset);
@@ -75,6 +75,11 @@ module.exports = app => {
     app.post('/v1/admin/user/edit', [middlewares.Auth.isAuthorized, middlewares.Auth.isLogged, middlewares.validatorV2.user, middlewares.validatorV2.validateID, middlewares.Dashbaord.emailEditExists, middlewares.Dashbaord.phoneNumberEditExists], editUser);
     app.post('/v1/admin/user/remove', [middlewares.Auth.isAuthorized, middlewares.Auth.isLogged, middlewares.validatorV2.validateID], removeUser);
 
+    //User
+    app.post('/v1/user/new', [middlewares.Auth.isAuthorized, middlewares.validatorV2.user, middlewares.Dashbaord.emailExists,middlewares.Dashbaord.phoneNumberExists], setUser);
+    app.get('/v1/user/get', [middlewares.Auth.isAuthorized, middlewares.validatorV2.validateIDGet], getUser);
+    app.post('/v1/user/edit', [middlewares.Auth.isAuthorized, middlewares.validatorV2.user, middlewares.validatorV2.validateID, middlewares.Dashbaord.emailEditExists, middlewares.Dashbaord.phoneNumberEditExists], editUser);
+    app.post('/v1/user/remove', [middlewares.Auth.isAuthorized, middlewares.validatorV2.validateID], removeUser);
   
   //Admin Park
   app.post('/v1/admin/park/new', [middlewares.Auth.isAuthorized, middlewares.Auth.isLogged, middlewares.validatorV2.park, middlewares.Dashbaord.parkNameExists], setPark);
