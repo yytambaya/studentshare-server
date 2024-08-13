@@ -9,7 +9,7 @@ module.exports = {
         DEV_DB_URL: 'mongodb://0.0.0.0:27017/share',
         PROD_DB_URL: `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@cluster0.mrrhl.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`,
         DEV_API_URL: 'http://localhost:5000',
-        PROD_API_URL: 'https://healdaworld-admin.herokuapp.com',
+        PROD_API_URL: 'https://studentshare-server.vercel.app/',
         PROD_SITE_URL: 'http://healaworld.org',
         PROD_APP_URL: 'http://dashboard.healaworld.org',
         DEV_SITE_URL: 'http://localhost:3000'
