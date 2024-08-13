@@ -1,7 +1,7 @@
 const dotenv = require("dotenv");
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
-const request = require("request");
+//const request = require("request");
 const jwt = require("jsonwebtoken");
 const axios = require('axios');
 const { v4: uuidv4 } = require('uuid');
