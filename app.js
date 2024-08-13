@@ -41,8 +41,8 @@ mongoose.connect(DB_URL, {useNewUrlParser: true, useUnifiedTopology: true})
 
 //Routes
 app.get("/", (req, res) => {
-    res.send("Studentshare APIs");
-    console.log("Studentshare APIs");
+    res.send("Student-share API");
+    console.log("Student-share API");
     
 });
 
