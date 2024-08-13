@@ -9,6 +9,9 @@ const { setPark, getPark, getAllParks, editPark, removePark } = require('../cont
 const { getAllSlots, setSlot, editSlot, removeSlot, getSlot } = require('../controllers/slot.controller');
 const { getAllReservations, setReservation, getReservation, editReservation, removeReservation, getAllUserReservations, revokeReservation } = require('../controllers/reservation.controller');
 const { getAllUsers, editUser, removeUser, getUser, setUser } = require('../controllers/user.controller');
+const { setShare, getShare, getAllShares, editShare, removeShare, getUserShares } = require('../controllers/share.controller');
+const { EmptyImageUpload } = require('../middlewares/upload.middleware');
+const { uploadImageToCloudinary, deleteImageAndUploadIfExists } = require('../servicees/upload');
 //const { userValidationRules, validate } = require('../middlewares')
 
 var storage = multer.diskStorage({
@@ -18,7 +21,8 @@ var storage = multer.diskStorage({
   filename: (req, file, cb) => {
       cb(null, + Date.now())
      console.log("uploaded")
-  }
+  },
+  limits: { fileSize: 100 * 1024 * 1024 }
 });
 
 var upload = multer({ storage: storage });
@@ -34,13 +38,20 @@ module.exports = app => {
     app.use(passport.initialize())
     app.use(passport.session())
     
+    app.use((req, res, next) => {
+      res.header('Access-Control-Allow-Credentials', true)
+      // res.header('Access-Control-Allow-Origin', getSiteBaseURL())
+      res.header('Access-Control-Allow-Headers', 'X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept')
+      next()
+    })
+
     //Starter
-    app.post('/v1/user/signup', [middlewares.Auth.isAuthorized, middlewares.validatorV2.signup,  middlewares.Auth.accountExists], controllers.login.signUp);
+    app.post('/v1/user/signup', [middlewares.validatorV2.signup,  middlewares.Auth.accountExists, middlewares.Auth.regNoExists], controllers.login.signUp);
     app.post('/v1/user/subscribe', [middlewares.Auth.isAuthorized, middlewares.validatorV2.validateEmail,  middlewares.Auth.subscriptionExists], controllers.login.subscribe);
-    app.post('/v1/admin/signup', [middlewares.Auth.isAuthorized, middlewares.validatorV2.signup,  middlewares.Auth.adminAccountExists], controllers.login.adminSignUp);
+    app.post('/v1/admin/signup', [middlewares.validatorV2.signup,  middlewares.Auth.adminAccountExists], controllers.login.adminSignUp);
     app.get('/v1/user/activate', [middlewares.validator.validateID_get],  controllers.login.verifyAccount); //correct 
-    app.post('/v1/user/login', [middlewares.Auth.isAuthorized, middlewares.validatorV2.login, middlewares.Dashbaord.accountVerified], controllers.login.signIn);
-    app.post('/v1/admin/login', [middlewares.Auth.isAuthorized, middlewares.validatorV2.login], controllers.login.adminSignIn);
+    app.post('/v1/user/login', [middlewares.validatorV2.login, middlewares.Dashbaord.accountVerified], controllers.login.signIn);
+    app.post('/v1/admin/login', [ middlewares.validatorV2.adminLogin], controllers.login.adminSignIn);
     app.post('/v1/user/forgotpassword', [middlewares.Auth.isAuthorized, middlewares.validatorV2.validateEmail], controllers.login.forgotPassword);
     app.get('/v1/user/reset', [middlewares.validator.validateID_get, middlewares.validator.validateToken], controllers.login.passwordReset);
     app.post('/v1/user/newpassword', [middlewares.Auth.isAuthorized, middlewares.validator.validateID_post, middlewares.validatorV2.validatePassword], controllers.login.newPassword);
@@ -167,6 +178,21 @@ module.exports = app => {
       app.get('/v1/admin/referral/getall', [middlewares.Auth.isAuthorized, middlewares.Auth.isLogged], controllers.dashboard.Leadboard.getAllLeads);
     //app.post('/v1/admin/referral/edit', [middlewares.Auth.isAuthorized, middlewares.Auth.isLogged, middlewares.validatorV2.leadboard, middlewares.validatorV2.validateID], controllers.dashboard.Leadboard.editLead);
     //app.get('/v1/admin/leadboard/remove', [middlewares.Auth.isAuthorized, middlewares.Auth.isLogged, middlewares.validatorV2.validateID], controllers.dashboard.Leadboard.removeLead);
-        
+    
+    
+  //Admin Share
+  app.post('/v1/admin/share/new', [middlewares.Auth.isAuthorized, middlewares.Auth.isLogged, EmptyImageUpload.single('file'), middlewares.validatorV2.share, uploadImageToCloudinary], setShare);
+  app.get('/v1/admin/get', [middlewares.Auth.isAuthorized, middlewares.Auth.isLogged, middlewares.validatorV2.validateIDGet], getShare);
+  app.get('/v1/admin/share/getall', [middlewares.Auth.isAuthorized, middlewares.Auth.isLogged], getAllShares);
+  app.post('/v1/admin/share/edit', [middlewares.Auth.isAuthorized, middlewares.Auth.isLogged, middlewares.validatorV2.share, middlewares.validatorV2.validateID], editShare);
+  app.post('/v1/admin/share/remove', [middlewares.Auth.isAuthorized, middlewares.Auth.isLogged, middlewares.validatorV2.validateID, deleteImageAndUploadIfExists], removeShare);
+  
+  //User Share
+  app.post('/v1/user/share/new', [middlewares.Auth.isAuthorized, middlewares.Auth.isLogged, EmptyImageUpload.single('file'), middlewares.validatorV2.share, uploadImageToCloudinary], setShare);
+  app.get('/v1/user/get', [middlewares.Auth.isAuthorized, middlewares.Auth.isLogged, middlewares.validatorV2.validateIDGet], getShare);
+  app.get('/v1/user/share/getall', [middlewares.Auth.isAuthorized, middlewares.Auth.isLogged, middlewares.validatorV2.validateIDGet], getUserShares);
+  app.post('/v1/user/share/edit', [middlewares.Auth.isAuthorized, middlewares.Auth.isLogged, middlewares.validatorV2.share, middlewares.validatorV2.validateID], editShare);
+  app.post('/v1/user/share/remove', [middlewares.Auth.isAuthorized, middlewares.Auth.isLogged, middlewares.validatorV2.validateID, deleteImageAndUploadIfExists], removeShare);
+  
 
 }

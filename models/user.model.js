@@ -12,10 +12,9 @@ const userSchema = new mongoose.Schema({
     unique: true
   },
   
-  phoneNumber:{
+  regNo:{
     type:String,
-    required: false,
-    unique: true
+    required: false
   },
 
   password:{

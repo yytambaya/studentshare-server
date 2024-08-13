@@ -5,6 +5,7 @@ exports.setUser = (req, res) => {
     const user = new User({
         name: req.body.name,
         email: req.body.email,
+        regNo: req.body.regNo,
         phoneNumber: req.body.phoneNumber,
         password: bcrypt.hashSync(req.body.password, 8),
         status: req.body.status

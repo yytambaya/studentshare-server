@@ -18,6 +18,19 @@ const accountExists = ((req, res, next) => {
     });
 })
 
+const regNoExists = ((req, res, next) => {
+    User.findOne({regNo: req.body.regNo}, (err, result) => {
+        if(err){
+            console.log("Error: ", err);
+            res.json({error:"error", result:"something went wrong"});
+        }else if(result){
+            res.json({error:"error", result:"registration number already registered"});
+        }else{
+            next();
+        }
+    });
+})
+
 const subscriptionExists = ((req, res, next) => {
     User.findOne({email: req.body.email}, (err, result) => {
         if(err){
@@ -166,6 +179,7 @@ module.exports = {
     isLogged: isLogged,
     verifyToken: verifyToken,
     accountExists: accountExists,
+    regNoExists: regNoExists,
     subscriptionExists: subscriptionExists,
     adminAccountExists: adminAccountExists,
     googleAccountExists: googleAccountExists,

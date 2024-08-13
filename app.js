@@ -26,7 +26,7 @@ app.use(passport.session())
 
 
 //DB connection
-const DB_URL = allConfig.App.ENV == "PROD"? allConfig.AppPROD_DB_URL : allConfig.App.DEV_DB_URL;
+const DB_URL = allConfig.App.ENV == "PROD"? allConfig.App.PROD_DB_URL : allConfig.App.DEV_DB_URL;
 const ENV = allConfig.App.ENV == "PROD"? "PRODUCTION" : "DEVELOPMENT";
 
 mongoose.connect(DB_URL, {useNewUrlParser: true, useUnifiedTopology: true})

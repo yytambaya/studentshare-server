@@ -36,6 +36,7 @@ exports.signUp = (req, res) => {
     const user = new User({
         email: req.body.email,
         name: req.body.name,
+        regNo: req.body.regNo,
         password: bcrypt.hashSync(req.body.password, 8)
     })
 
@@ -108,6 +109,7 @@ exports.adminSignUp = (req, res) => {
         
     const admin = new Admin({
         email: req.body.email,
+        regNo: req.body.regNo,
         name: req.body.name,
         password: bcrypt.hashSync(req.body.password, 8)
     })
@@ -284,7 +286,7 @@ exports.signIn = (req, res) => {
         email: req.body.email
     })
     //console.log("Email: " + req.body.email, "Password: " + req.body.password)
-    User.findOne({email: req.body.email}, (err, result) => {
+    User.findOne({regNo: req.body.regNo}, (err, result) => {
         if(err){
             console.log("Error: ", err);
             return res.json({error:"error", status: 500, result:"something went wrong"});
@@ -293,7 +295,7 @@ exports.signIn = (req, res) => {
             //process.env.login_token_secret
             const isValidPassword = bcrypt.compareSync(req.body.password, result.password);
             if(!isValidPassword){
-               return res.json({error:"error", status: 404, result:"email or password is incorrect"});
+               return res.json({error:"error", status: 404, result:"registration number or password is incorrect"});
             }
             if(false){
                 return res.json({error:"error", result:"Verify your account"});

@@ -42,7 +42,27 @@ const profile = (req, res, next) => {
 
 const login = (req, res, next) => {
     const validationRule = {
-        "email": "required|email",
+        "regNo": "required|string",
+        "password": "required|string|min:6",   
+    }
+    validator(req.body, validationRule, {}, (err, status) => {
+        if (!status) {
+            /*res.status(412)
+                .send({
+                    success: false,
+                    message: 'Validation failed',
+                    data: err
+                });*/
+            res.json({error:"error", result: err})    
+        } else {
+            next();
+        }
+    });
+}
+
+const adminLogin = (req, res, next) => {
+    const validationRule = {
+        "email": "required|string",
         "password": "required|string|min:6",   
     }
     validator(req.body, validationRule, {}, (err, status) => {
@@ -559,12 +579,34 @@ const revoking = (req, res, next) => {
     });
 }
 
+const share = (req, res, next) => {
+    const validationRule = {
+        "title": "required|string|max:1000",
+        "note": "string",
+        "link": "string",
+        "fileLink": "string"
+    }
+    validator(req.body, validationRule, {}, (err, status) => {
+        if (!status) {
+            /*res.status(412)
+                .send({
+                    success: false,
+                    message: 'Validation failed',
+                    data: err
+                });*/
+            res.json({error:"error", result: err})    
+        } else {
+            next();
+        }
+    });
+}
 
 
 module.exports = { 
   signup,
   profile,
   login,
+  adminLogin,
   program,
   leadboard,
   payment,
@@ -574,6 +616,7 @@ module.exports = {
   slot,
   reservation,
   revoking,
+  share,
   validateEmail,
   validateTitle,
   validateDescription,
