@@ -76,6 +76,7 @@ const verifyToken = ((req, res, next) => {
     const secret = "56278t7hbdjksji";
     jwt.verify(req.query.token, config.allconfig.temp_var.token_secret, (err, decoded) => {
         if(err){
+            console.log('verify token: unauthorized')
             return res.json({error: "error", result:"Unuthorized request. Login"});
         }
         config.allconfig.temp_var.id = decoded.id;
@@ -104,13 +105,15 @@ const isAuthorized = ((req, res, next) => {
     let api_key = req.headers["x-access-key"];
             
     if (!api_key) {
-        return res.json({error: "error", result:"unauthorized"});
+        console('x-access key is absent')
+        return res.json({error: "error", result:"unauthorized user"});
     }
     //jwt.verify(token, config.allconfig.temp_var.token_secret, (err, decoded) => {
         if(api_key == process.env.API_KEY){
             next();
         }else{
-            return res.json({error: "error", result:"unauthorized"});
+            console.log('access key is wrong')
+            return res.json({error: "error", result:"unauthorized user"});
         }
         /*if (err) {
             return res.json({error: "error", result:"unuthorized"});
