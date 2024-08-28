@@ -13,7 +13,8 @@ exports.setShare = (req, res) => {
         type: req.body.type,
         note: req.body.note,
         link: req.body.link,
-        fileLink: fileNumber
+        fileLink: fileNumber,
+        userId: req.body.userId
     })
     
     share.save()
@@ -74,11 +75,65 @@ exports.getAllShares = async (req, res) => {
 
 }
 
+exports.getAllApprovedShares = async (req, res) => {
+    console.log("Getting more")   
+    var returnValue = {}
+    try{
+       await Share.find({status: 1}).skip(parseInt(req.query.skip)).limit(parseInt(req.query.limit)).sort({createdAt: -1}).then(async result => {
+           if(Object.keys(result).length != 0){
+                returnValue = {error:"", result:result}
+           
+           }else{
+               returnValue = {error:"error", result:"NO_LITS"};
+           }
+
+       }).catch(error => {
+           //console.log("Error: " + error)
+           returnValue = {error: "error", result:"Something went wrong"}
+       })   
+       //console.log("Tweets with profiles...")
+       return res.json(returnValue);
+
+   }catch(error){
+       //console.log(error)
+       return res.json({error:"error", result:"Something went wrong"});
+       
+   }
+
+}
+
+exports.getAllRejectedShares = async (req, res) => {
+    console.log("Getting more")   
+    var returnValue = {}
+    try{
+       await Share.find({status: 0}).skip(parseInt(req.query.skip)).limit(parseInt(req.query.limit)).sort({createdAt: -1}).then(async result => {
+           if(Object.keys(result).length != 0){
+                returnValue = {error:"", result:result}
+           
+           }else{
+               returnValue = {error:"error", result:"NO_LITS"};
+           }
+
+       }).catch(error => {
+           //console.log("Error: " + error)
+           returnValue = {error: "error", result:"Something went wrong"}
+       })   
+       //console.log("Tweets with profiles...")
+       return res.json(returnValue);
+
+   }catch(error){
+       //console.log(error)
+       return res.json({error:"error", result:"Something went wrong"});
+       
+   }
+
+}
+
 exports.getUserShares = async (req, res) => {
   console.log("Getting more")   
   var returnValue = {}
   try{
-     await Share.find({_id: req.query.id}).skip(parseInt(req.query.skip)).limit(parseInt(req.query.limit)).sort({createdAt: -1}).then(async result => {
+     await Share.find({userId: req.query.id}).skip(parseInt(req.query.skip)).limit(parseInt(req.query.limit)).sort({createdAt: -1}).then(async result => {
          if(Object.keys(result).length != 0){
               returnValue = {error:"", result:result}
          
@@ -101,6 +156,7 @@ exports.getUserShares = async (req, res) => {
 
 }
 
+
 exports.editShare = (req, res) => {
   const share = new Share({
     title: req.body.title,
@@ -111,7 +167,7 @@ exports.editShare = (req, res) => {
     status: req.body.status
   })
 
-   Share.findByIdAndUpdate({_id: req.body.id}, details, (err, result) => {
+   Share.findByIdAndUpdate({_id: req.body.id}, share, (err, result) => {
         if(err){
             return res.json({error:"error", result:"something went wrong"});
         }
@@ -124,6 +180,40 @@ exports.editShare = (req, res) => {
    });
 
 }
+
+exports.approveShare = (req, res) => {
+  
+     Share.findByIdAndUpdate({_id: req.body.id}, { status: 1 }, (err, result) => {
+          if(err){
+              return res.json({error:"error", result:"something went wrong"});
+          }
+          if(result){
+              console.log(result);
+              return res.json({error:"", result:result});
+          }else{
+              return res.json({error:"", result:"Share not found"});
+          }
+     });
+  
+  }
+  
+  exports.rejectShare = (req, res) => {
+    
+  
+     Share.findByIdAndUpdate({_id: req.body.id}, {status: 0}, (err, result) => {
+          if(err){
+                console.log(err)
+              return res.json({error:"error", result:"something went wrong"});
+          }
+          if(result){
+              console.log(result);
+              return res.json({error:"", result:result});
+          }else{
+              return res.json({error:"", result:"Share not found"});
+          }
+     });
+  
+  }
 
 exports.removeShare = (req, res) => {
     Share.findByIdAndDelete(req.body.id, (err, result) => {

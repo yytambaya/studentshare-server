@@ -584,7 +584,31 @@ const share = (req, res, next) => {
         "title": "required|string|max:1000",
         "note": "string",
         "link": "string",
-        "fileLink": "string"
+        "fileLink": "string",
+        "userId": "required|string"
+    }
+    validator(req.body, validationRule, {}, (err, status) => {
+        if (!status) {
+            /*res.status(412)
+                .send({
+                    success: false,
+                    message: 'Validation failed',
+                    data: err
+                });*/
+            res.json({error:"error", result: err})    
+        } else {
+            next();
+        }
+    });
+}
+
+const shareStatus = (req, res, next) => {
+    const validationRule = {
+        "sttaus": "required|string|max:1000",
+        "note": "string",
+        "link": "string",
+        "fileLink": "string",
+        "userId": "required|string"
     }
     validator(req.body, validationRule, {}, (err, status) => {
         if (!status) {

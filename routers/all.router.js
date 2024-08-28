@@ -9,7 +9,7 @@ const { setPark, getPark, getAllParks, editPark, removePark } = require('../cont
 const { getAllSlots, setSlot, editSlot, removeSlot, getSlot } = require('../controllers/slot.controller');
 const { getAllReservations, setReservation, getReservation, editReservation, removeReservation, getAllUserReservations, revokeReservation } = require('../controllers/reservation.controller');
 const { getAllUsers, editUser, removeUser, getUser, setUser } = require('../controllers/user.controller');
-const { setShare, getShare, getAllShares, editShare, removeShare, getUserShares } = require('../controllers/share.controller');
+const { setShare, getShare, getAllShares, editShare, removeShare, getUserShares, getAllRejectedShares, getAllApprovedShares, approveShare, rejectShare } = require('../controllers/share.controller');
 const { EmptyImageUpload } = require('../middlewares/upload.middleware');
 const { uploadImageToCloudinary, deleteImageAndUploadIfExists } = require('../servicees/upload');
 //const { userValidationRules, validate } = require('../middlewares')
@@ -185,7 +185,11 @@ module.exports = app => {
   app.post('/v1/admin/share/new', [middlewares.Auth.isAuthorized, middlewares.Auth.isLogged, EmptyImageUpload.single('file'), middlewares.validatorV2.share, uploadImageToCloudinary], setShare);
   app.get('/v1/admin/get', [middlewares.Auth.isAuthorized, middlewares.Auth.isLogged, middlewares.validatorV2.validateIDGet], getShare);
   app.get('/v1/admin/share/getall', [middlewares.Auth.isAuthorized, middlewares.Auth.isLogged], getAllShares);
+  app.get('/v1/admin/share/approved', [middlewares.Auth.isAuthorized, middlewares.Auth.isLogged], getAllApprovedShares);
+  app.get('/v1/admin/share/rejected', [middlewares.Auth.isAuthorized, middlewares.Auth.isLogged], getAllRejectedShares);
   app.post('/v1/admin/share/edit', [middlewares.Auth.isAuthorized, middlewares.Auth.isLogged, middlewares.validatorV2.share, middlewares.validatorV2.validateID], editShare);
+  app.post('/v1/admin/share/approve', [middlewares.Auth.isAuthorized, middlewares.Auth.isLogged, middlewares.validatorV2.validateID], approveShare);
+  app.post('/v1/admin/share/reject', [middlewares.Auth.isAuthorized, middlewares.Auth.isLogged, middlewares.validatorV2.validateID], rejectShare);
   app.post('/v1/admin/share/remove', [middlewares.Auth.isAuthorized, middlewares.Auth.isLogged, middlewares.validatorV2.validateID, deleteImageAndUploadIfExists], removeShare);
   
   //User Share

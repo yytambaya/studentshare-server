@@ -21,11 +21,15 @@ const shareSchema = new mongoose.Schema({
     type:String,
     required: false,
   },
+  userId: {
+    type:String,
+    required: true,
+  },
   status: {
     type: Number,
     min: 0,
     max: 1,
-    default: 1,
+    default: 0,
     required: true,
   }, 
   }, {timestamps: true})

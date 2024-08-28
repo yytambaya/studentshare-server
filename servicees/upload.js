@@ -28,7 +28,7 @@ exports.uploadImageToCloudinary = async (req, res, next) => {
         const folderCreationPath = `${CLOUDINARY_IJMB_FOLDER_NAME}/${parentFolder}/${folderName}`
         console.log("Path: " + folderCreationPath)
         const extension = path.extname(req.file.originalname);
-        fileName += extension
+        fileName //+= extension
         const b64 = Buffer.from(req.file.buffer).toString('base64')
         const dataURI = 'data:' + req.file.mimetype + ';base64,' + b64
         console.log('My File Name: ', fileName)

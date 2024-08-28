@@ -27,7 +27,7 @@ exports.generateFileName = async (req, file, cb) => {
   let fileName = new Date().toDateString()
   const studentGenerationResult = await generateRandomNumber()
   if (studentGenerationResult.status === 200) {
-    fileName = `${studentGenerationResult.data}.png`
+    fileName = `${studentGenerationResult.data}`
     console.log('Student Number from Multer: ' + studentGenerationResult.data)
     addToMemory('randomNumber', studentGenerationResult.data)
   }
