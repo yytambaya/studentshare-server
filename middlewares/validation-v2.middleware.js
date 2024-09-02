@@ -4,7 +4,7 @@ const signup = (req, res, next) => {
     const validationRule = {
         "name": "required|string",
         "email": "required|email|max:1000",
-        "password": "required|string|min:6",
+        "password": "required|string",
     }
     validator(req.body, validationRule, {}, (err, status) => {
         if (!status) {
@@ -604,7 +604,7 @@ const share = (req, res, next) => {
 
 const shareStatus = (req, res, next) => {
     const validationRule = {
-        "sttaus": "required|string|max:1000",
+        "status": "required|string|max:1000",
         "note": "string",
         "link": "string",
         "fileLink": "string",
